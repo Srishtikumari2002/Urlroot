@@ -18,7 +18,10 @@ class SignupForm(UserCreationForm):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         user.is_staff =  True
-        user.is_superuser = True
+        # Admin can only be created by other admins
+        # this form creates staff who can log in to the admin panel
+        # but can't edit or view anything until given access by the admin
+        # user.is_superuser = True
         if commit:
             user.save()
         return user
