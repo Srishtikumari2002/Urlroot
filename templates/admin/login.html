@@ -1,0 +1,146 @@
+{% extends "admin/base_site.html" %} {% load i18n static %} {% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/login.css' %} ">
+<!-- -->
+{{ form.media }} {% endblock %} {% block bodyclass %}{{ block.super }} login{% endblock %} {% block usertools %}{% endblock %} {% block nav-global %}{% endblock %} {% block nav-sidebar %}{% endblock %} {% block content_title %}{% endblock %}
+<!-- -->
+{% block breadcrumbs %}{% endblock %} {% block content %} {% if form.errors and not form.non_field_errors %}
+<p class="errornote">
+    {% if form.errors.items|length == 1 %}{% translate "Please correct the error below. " %}{% else %}{% translate "Please correct the errors below. " %}{% endif %}
+</p>
+{% endif %} {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+<p class="errornote">
+    {{ error }}
+</p>
+{% endfor %} {% endif %}
+
+<div id="content-main">
+
+    {% if user.is_authenticated %}
+    <p class="errornote">
+        {% blocktranslate trimmed %} You are authenticated as {{ username }}, but are not authorized to access this page. Would you like to login to a different account? {% endblocktranslate %}
+    </p>
+    {% endif %}
+
+    <form enctype="multipart/form-data" action="{{ app_path }} " method="post" id="login-form">{% csrf_token %}
+        <div class="form-row">
+            {{ form.username.errors }} {{ form.username.label_tag }} {{ form.username }}
+        </div>
+        <div id="login_form" class="form-row">
+            {{ form.password.errors }} {{ form.password.label_tag }} {{ form.password }}
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="submit-row">
+                <input id="start_video" type="button" value="{% translate 'Start Video for Face Authentication' %}">
+            </div>
+            <!-- <video id="player" autoplay width="350"></video> -->
+            <div hidden class="form-row">
+                {{ form.file.errors }} {{ form.file.label_tag }} {{ form.file }}
+            </div>
+            <!-- <input type="file" accept="video/*" name="face_video" id="face_video" hidden /> -->
+
+        </div>
+        {% url 'admin_password_reset' as password_reset_url %} {% if password_reset_url %}
+        <div class="password-reset-link">
+            <a href="{{ password_reset_url }} ">{% translate 'Forgotten your password or username?' %}</a>
+        </div>
+        {% endif %}
+        <p id="countdown"></p>
+        <div class="submit-row">
+            <input id="login" type="submit" disabled value="{% translate 'Log in' %}">
+        </div>
+        <p>New user?
+            <a href="{% url 'signup' %}">Sign up</a>
+        </p>
+    </form>
+
+</div>
+<script>
+    var start_video_btn = document.getElementById('start_video');
+    var login_form = document.getElementById('login_form');
+    var countdown_text = document.getElementById('countdown');
+    var login = document.getElementById('login');
+
+    let do_countdown;
+    let mediaRecorder;
+    var seconds = 2;
+
+    function countdown() {
+        seconds--;
+        countdown_text.innerHTML = "Recording video, wait for " + seconds + " seconds.";
+        if (seconds == 0) {
+            login.disabled = false;
+            clearInterval(do_countdown);
+            countdown_text.innerHTML = "";
+            mediaRecorder.stop();
+        }
+    }
+
+    function loadURLToInputFiled(url) {
+        getImgURL(url, (vidBlob) => {
+            let fileName = 'face.webm'
+            let file = new File([vidBlob], fileName, {
+                type: "video/webm",
+                lastModified: new Date().getTime()
+            });
+            let container = new DataTransfer();
+            container.items.add(file);
+            // document.querySelector('#face_video').files = container.files;
+            document.querySelector('input[type=file]').files = container.files;
+
+        })
+    }
+
+    function getImgURL(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            callback(xhr.response);
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
+        xhr.send();
+    }
+
+
+    function start_video() {
+
+        start_video_btn.remove()
+        alert('Please be in proper lighting for face recognition.');
+        var player = document.createElement("video");
+        player.width = "350";
+        player.autoplay = true;
+        login_form.appendChild(player);
+        var handleSuccess = function(stream) {
+            player.srcObject = stream;
+            do_countdown = setInterval(countdown, 1000);
+
+            const options = {
+                mimeType: 'video/webm'
+            };
+
+            const recordedChunks = [];
+
+            mediaRecorder = new MediaRecorder(stream, options);
+
+            mediaRecorder.addEventListener('dataavailable', function(e) {
+                if (e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            });
+
+            mediaRecorder.addEventListener('stop', function() {
+                var video_url = URL.createObjectURL(new Blob(recordedChunks));
+                loadURLToInputFiled(video_url);
+            });
+
+            mediaRecorder.start();
+        };
+
+        navigator.mediaDevices
+            .getUserMedia({
+                video: true
+            })
+            .then(handleSuccess);
+    }
+
+    start_video_btn.onclick = start_video;
+</script>
+{% endblock %}

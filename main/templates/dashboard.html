@@ -1,0 +1,34 @@
+{% extends 'base.html' %}{% block header_extra %} {% if short_urls == "none" %}
+<h1 class="masthead-heading mb-0">You have not shortened any links yet</h1>
+<h2 class="masthead-subheading mb-0">Lets do it now</h2>
+{% else %}
+<h1 class="masthead-heading mb-0">Make your links</h1>
+<h2 class="masthead-subheading mb-0">shorter</h2>{% endif %}
+<div class="input-group mb-3 mt-5">
+    <form class="input-group mb-3 mt-5" method="post" action="{% url 'create_short' %}">
+        {% csrf_token %}
+        <input type="text" name="link" class="form-control" placeholder="Shorten your url" aria-label="Shorten your url" aria-describedby="shorten-btn">
+        <button class="btn btn-warning" type="submit" id="shorten-btn">Shorten</button>
+    </form>
+</div>{% endblock %}{% block content %}
+
+<!-- short urls -->
+{% if not short_urls == "none" %}
+<section class="container overflow-hidden">
+    <br>
+    <div class="grid-div">
+        {% for link,short,date in short_urls %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ short }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ date }}</h6>
+                <p class="card-text">{{ link }}</p>
+                <a href="{% url 'view_short' short %}" class="card-link">View</a>
+                <a href="{% url 'url_edit' short %}" class="card-link">Edit</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<br> {% endif %} {% endblock %}

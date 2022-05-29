@@ -1,0 +1,90 @@
+{% extends 'base.html' %}{% block header_extra %}
+<div class="input-group mb-3 mt-5">
+    <span class="input-group-text" id="long-link">Link</span>
+    <input type="text" class="form-control" disabled="true" value="{{ link }}" aria-describedby="long-link">
+</div>
+<div class="input-group mb-3 mt-5">
+    <span class="input-group-text" id="basic-description">Description</span>
+    <input type="text" id="message" class="form-control" placeholder="Write a custom message to users" value="{{ message }}" aria-describedby="basic-description">
+</div>
+
+<div class="input-group mb-3 mt-5">
+    <span class="input-group-text">https://urlroot.herokuapp.com/</span>
+    <input type="text" id="short" class="form-control" maxlength="10" placeholder="{{ short }}" value="{{ short }}" aria-label="short backhalf">
+</div>
+<div class="input-group mb-3 mt-5 align-items-center">
+    <span id="msg" class="bg-warning text-center"></span>
+</div> <button id="save" class="btn btn-primary btn-xl rounded-pill mt-5">Save</button> {% endblock %} {% block content %}
+<script>
+    var btn = document.getElementById("save");
+    var short_text = document.getElementById('short');
+    var msg = document.getElementById("msg");
+    var msg_ele = document.getElementById("message");
+    var initial_message = msg_ele.value;
+    var short_initial = short_text.value;
+
+    btn.onclick = function check_short() {
+        var short = short_text.value;
+        var message = msg_ele.value;
+        $.ajax({
+            url: "{% url 'check_short' %}",
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                short: short,
+            },
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            },
+            success: function(res) {
+                if (res.empty == "True") {
+                    msg.classList.add('input-group-text');
+                    msg.classList.add('form-control');
+                    msg.innerHTML = 'Shorturl cannot be blank.';
+                } else {
+                    if (message != initial_message) {
+                        save();
+                    }
+                    if (short != short_initial) {
+
+                        if (res.exists == 'True') {
+                            msg.classList.add('input-group-text');
+                            msg.classList.add('form-control');
+                            msg.innerHTML = 'Shorturl already exists.';
+                        } else {
+                            save();
+                        }
+
+                    }
+                }
+            }
+        })
+    }
+
+    function save() {
+        var short = short_text.value;
+        var message = msg_ele.value;
+
+        $.ajax({
+            url: "{% url 'save_custom_backhalf' %}",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                short: short,
+                shortid: '{{ id }}',
+                message: message
+            },
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken",
+                    '{{ csrf_token }}');
+            },
+            success: function(res) {
+                if (res.status == "ok") {
+                    msg.classList.add('input-group-text');
+                    msg.classList.add('form-control');
+                    msg.innerHTML = 'Shorturl updated.';
+                }
+            }
+        });
+    }
+</script>{% endblock %}

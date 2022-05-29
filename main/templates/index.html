@@ -1,0 +1,53 @@
+{% extends 'base.html' %}{% load static %} {% block header_extra %}
+<h1 class="masthead-heading mb-0">Share large resources</h1>
+<h2 class="masthead-subheading mb-0">not links</h2>
+<a class="btn btn-primary btn-xl rounded-pill mt-5" href="#features">Learn More</a>{% endblock %}{% block content %}
+
+
+<section id="features">
+    <div class="container px-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-lg-6 order-lg-2">
+                <div class="p-5"><img style="border-radius: 1rem; " class="img-fluid" src="{% static 'main/images/01.png' %}" alt="Preview short urls" /></div>
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <div class="p-5">
+                    <h2 class="display-4">Preview short urls</h2>
+                    <p>Urlroot provides preview of the original url before redirecting when you go to any urlroot short url.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container px-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="p-5"><img style="border-radius: 1rem; " class="img-fluid" src="{% static 'main/images/02.png' %}" alt="We care for security" /></div>
+            </div>
+            <div class="col-lg-6">
+                <div class="p-5">
+                    <h2 class="display-4">We care for security</h2>
+                    <p>Urlroot provides you security report of the original url on the preview page to make your online venture safer.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container px-5">
+        <div class="row gx-5 align-items-center">
+            <div class="col-lg-6 order-lg-2">
+                <div class="p-5"><img style="border-radius: 1rem; " class="img-fluid" src="{% static 'main/images/03.png' %}" alt="Sharing made easy" /></div>
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <div class="p-5">
+                    <h2 class="display-4">Sharing made easy</h2>
+                    <p>With Urlroot you can easily share your short links with any sharing platform in a single click.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section><br><br>{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}{% block header_extra %}
+<h2 class="mast-subheading mb-5">You will be redirected to <br><br>{{ link }}</h2>
+<h2 class="mast-subheading mb-5 text-warning">
+    {% if secure == "True" %}
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="green" class="bi bi-patch-check-fill" viewbox="0 0 16 16">
+        <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z"/>
+    </svg>The link is secure.{% else %}
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="orange" class="bi bi-exclamation-octagon-fill" viewbox="0 0 16 16">
+        <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    </svg>The link is not secure.{% endif %}
+</h2>
+{% if not message == '' %}
+<h2 class="input-group-text">Message from the creator of this short link <br><br>{{ message }}
+</h2>{% endif %}
+
+<!-- AddToAny BEGIN -->
+<div class="a2a_kit a2a_kit_size_32 a2a_default_style" data-a2a-url="https://urlroot.herokuapp.com/{{ short }}/" data-a2a-title="Urlroot short url">
+    <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+    <a class="a2a_button_facebook"></a>
+    <a class="a2a_button_twitter"></a>
+    <a class="a2a_button_email"></a>
+</div>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+<!-- AddToAny END -->
+
+<a class="btn btn-primary btn-xl rounded-pill mt-5" href="{{ link }}">Go</a> {% endblock %}{% block content %} {% endblock %}
