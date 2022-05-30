@@ -30,7 +30,7 @@ def create_face_id(username):
     video  = imageio.get_reader('face.avi',  'ffmpeg')
 
     for i, im in enumerate(video):
-        if i>=8:
+        if i>=5:
             break
         
         imageio.imwrite('temp.jpg', im)
