@@ -10,17 +10,7 @@ from django.urls import reverse_lazy
 from .forms import SignupForm
 from django.views import generic
 
-import imageio
-import environ
-from azure.cognitiveservices.vision.face import FaceClient
-from msrest.authentication import CognitiveServicesCredentials
-from azure.cognitiveservices.vision.face.models import TrainingStatusType
-
 # Create your views here.
-
-env = environ.Env()
-environ.Env.read_env()
-
 
 def index(request):
     """View function for the home page of Urlroot."""
@@ -167,66 +157,7 @@ def view_short(request, short):
     return redirect(index)
 
 # admin signup
-
-def create_face_id(username):
-
-    KEY = env("KEY")
-
-    ENDPOINT = env("ENDPOINT")
-
-    PERSON_GROUP_ID = 'urlrootstaff'
-    
-    face_client = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
-
-    if PERSON_GROUP_ID not in [x.person_group_id for x in face_client.person_group.list()]:
-        face_client.person_group.create(person_group_id=PERSON_GROUP_ID, name=PERSON_GROUP_ID)
-
-    staff = face_client.person_group_person.create(person_group_id=PERSON_GROUP_ID, name=username)
-
-    video  = imageio.get_reader('face.avi',  'ffmpeg')
-
-    for i, im in enumerate(video):
-        if i>=8:
-            break
-        
-        imageio.imwrite('temp.jpg', im)
-
-        face_client.person_group_person.add_face_from_stream(PERSON_GROUP_ID, staff.person_id, open('temp.jpg', 'r+b'))
-
-    
-    face_client.person_group.train(PERSON_GROUP_ID)
-
-    while True:
-        training_status = face_client.person_group.get_training_status(PERSON_GROUP_ID)
-        if (training_status.status is TrainingStatusType.succeeded):
-            break
-        elif (training_status.status is TrainingStatusType.failed):
-            face_client.person_group.delete(person_group_id=PERSON_GROUP_ID)
-            # return 0 for "Error registering face."
-            return 0
-    # return 1 for "Success"        
-    return 1
-
 class AdminSignup(generic.CreateView):
     form_class = SignupForm
     success_url = reverse_lazy("admin:login")
     template_name = "admin/signup.html"
-    
-    def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        file = request.FILES.get('file')
-        
-        if file != None:
-            with open('face.avi', 'wb+') as f:
-                for chunk in file.chunks():
-                    f.write(chunk)
-            face_response = create_face_id(username = request.POST.get('username'))
-
-            if not face_response:
-                return self.form_invalid(form)
-
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)

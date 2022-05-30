@@ -42,9 +42,9 @@
         </div>
         {% if form.password2.help_text %}
         <div class="help">{{ form.password2.help_text|safe }}</div>
-        {% endif %}
+        {% endif %}{{ form.file.errors }}
         <div hidden class="form-row">
-            {{ form.file.errors }} {{ form.file.label_tag }} {{ form.file }}
+            {{ form.file.label_tag }} {{ form.file }}
         </div>
         <div id="signup_form"></div>
         <p id="countdown"></p>
