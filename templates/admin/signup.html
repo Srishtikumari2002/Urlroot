@@ -28,12 +28,21 @@
         <div class="form-row">
             {{ form.username.errors }} {{ form.username.label_tag }} {{ form.username }}
         </div>
+        {% if form.username.help_text %}
+        <div class="help">{{ form.username.help_text|safe }}</div>
+        {% endif %}
         <div class="form-row">
             {{ form.password1.errors }} {{ form.password1.label_tag }} {{ form.password1 }}
         </div>
+        {% if form.password1.help_text %}
+        <div class="help">{{ form.password1.help_text|safe }}</div>
+        {% endif %}
         <div class="form-row">
             {{ form.password2.errors }} {{ form.password2.label_tag }} {{ form.password2 }}
         </div>
+        {% if form.password2.help_text %}
+        <div class="help">{{ form.password2.help_text|safe }}</div>
+        {% endif %}
         <div hidden class="form-row">
             {{ form.file.errors }} {{ form.file.label_tag }} {{ form.file }}
         </div>
