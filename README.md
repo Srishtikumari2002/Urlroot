@@ -13,7 +13,10 @@ Urlroot is a free url shortener.
 
 ## Demo
 You can try the web app at [urlroot.herokuapp.com](https://urlroot.herokuapp.com)
-If you create staff account you can login to admin site but can view or edit can information. If you want to change this behaviour then do local setup.
+
+[Video demo](https://www.canva.com/design/DAFCGfs-jGc/ZNRP5UDlR-b11-7Ygma_yg/watch?utm_content=DAFCGfs-jGc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+If you create staff account you can login to admin site but cannot view or edit any information. If you want to change this behaviour then do local setup.
 ## Local Setup
 * clone the github repo to your machine
 * using virtual environment is recommended
