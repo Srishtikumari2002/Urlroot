@@ -116,7 +116,10 @@ class SignupForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         face = self.files.get('file')
-        self.username = kwargs.get('data').get('username')
+        try:
+            self.username = kwargs.get('data').get('username')
+        except Exception:
+            print()
 
         if face != None:
             with open('face.avi', 'wb+') as f:
