@@ -1,1 +1,1 @@
-web: gunicorn Urlroot.wsgi --log-file -
+web: gunicorn Urlroot.wsgi
